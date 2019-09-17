@@ -11,11 +11,11 @@
     ],
     "require": {
 	    "php": ">=7.1",
-	    "ext-swoole": "4.4.2"
+	    "ext-swoole": ">=4.4.2"
     },
     "autoload": {
 	    "psr-4": {
-		    "FunnyFig\\Thread\\": "."
+		    "FunnyFig\\Swoole\\": "."
 	    }
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace FunnyFig\Thread;
+namespace FunnyFig\Swoole;
 
 use chan, co;
 
