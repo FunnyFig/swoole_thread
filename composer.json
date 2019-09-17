@@ -1,0 +1,21 @@
+{
+    "name": "funnyfig/swoole_thread",
+    "description": "mimic worker thread with swoole coroutine",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Yoo, Taihyung",
+            "email": "th.yoo@brainboot.kr"
+        }
+    ],
+    "require": {
+	    "php": ">=7.1",
+	    "ext-swoole": "4.4.2"
+    },
+    "autoload": {
+	    "psr-4": {
+		    "FunnyFig\\Thread\\": "."
+	    }
+    }
+}
