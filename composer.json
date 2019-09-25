@@ -1,6 +1,7 @@
 {
     "name": "funnyfig/swoole_thread",
     "description": "mimic worker thread with swoole coroutine",
+    "version": "1.0.0",
     "type": "library",
     "keywords": ["swoole", "coroutine", "thread"],
     "license": "MIT",
