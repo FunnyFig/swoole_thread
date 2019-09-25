@@ -7,21 +7,24 @@ use chan, co;
 abstract class Thread {
 
 	protected $id = -1;
-	protected $chan;
+	protected $ichan;
 
-	function __construct(callable $proc=null)
+	function __construct(int $nqueue=1)
 	{
-		$this->chan = new chan(1);
-		$this->id = go([$this, '_proc'], $proc);
+		if ($nqueue<1) {
+			throw new \InvalidArgumentException();
+		}
+		$this->ichan = new chan($nqueue);
+		$this->id = go([$this, '_proc']);
 	}
 
-	protected function _proc(callable $proc=null)
+	protected function _proc()
 	{
-		$this->proc($proc);
+		$this->proc();
 		$this->id = -1;
 	}
 
-	abstract protected function proc(callable $proc);
+	abstract protected function proc();
 
 	function is_alive()
 	{
@@ -33,23 +36,23 @@ abstract class Thread {
 		if (!$this->is_alive()) return;
 
 		if (co::getuid() >= 0) {
-			$this->chan->push([$cmd, $args]);
+			$this->ichan->push([$cmd, $args]);
 		}
 		else {
 			go(function ($cmd, $args) {
-				$this->chan->push([$cmd, $args]);
+				$this->ichan->push([$cmd, $args]);
 			}, $cmd, $args);
 		}
 	}
 
 	protected function has_cmd()
 	{
-		return !$this->chan->isEmpty();
+		return !$this->ichan->isEmpty();
 	}
 
 	protected function get_cmd($ms = 0)
 	{
-		return $this->chan->pop($ms/1000);
+		return $this->ichan->pop($ms/1000);
 	}
 
 }
@@ -59,10 +62,7 @@ abstract class Thread {
 if (!debug_backtrace()) {
 
 class Test extends Thread {
-	//protected const STOP = 0;
-	//protected const START = 1;
-
-	protected function proc(callable $proc=null)
+	protected function proc()
 	{
 		for (;;) {
 			list($cmd, $args) = $this->get_cmd();
@@ -84,8 +84,13 @@ class Test extends Thread {
 
 $t = new Test();
 
-$t->execute(function() {
-	return "proc";
-});
+$t->execute(function(...$args) {
+	return "proc1: ".join(', ', $args);
+}, 1, 2, 3, 4);
+
+$t->execute(function(...$args) {
+	return "proc2: ".array_sum($args);
+}, 1, 2, 3, 4);
+
 
 }
