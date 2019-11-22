@@ -15,6 +15,12 @@ abstract class Thread {
 			throw new \InvalidArgumentException();
 		}
 		$this->ichan = new chan($nqueue);
+		$this->launch();
+	}
+
+	function launch()
+	{
+		if ($this->is_alive()) return;
 		$this->id = go([$this, '_proc']);
 	}
 
