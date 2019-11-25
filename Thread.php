@@ -11,16 +11,16 @@ abstract class Thread {
 
 	function __construct(int $nqueue=1)
 	{
-		if ($nqueue<1) {
-			throw new \InvalidArgumentException();
-		}
-		$this->ichan = new chan($nqueue);
-		$this->launch();
+		$this->launch($nqueue);
 	}
 
-	function launch()
+	function launch(int $nqueue=1)
 	{
 		if ($this->is_alive()) return;
+		if ($this->ichan) {
+			$nqueue = $this->ichan->capacity;
+		}
+		$this->ichan = new chan($nqueue);
 		$this->id = go([$this, '_proc']);
 	}
 
