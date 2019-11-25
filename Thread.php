@@ -19,6 +19,7 @@ abstract class Thread {
 		if ($this->is_alive()) return;
 		if ($this->ichan) {
 			$nqueue = $this->ichan->capacity;
+			$this->ichan->close();
 		}
 		$this->ichan = new chan($nqueue);
 		$this->id = go([$this, '_proc']);
